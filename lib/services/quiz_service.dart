@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:math';
 import '../models/quiz.dart';
 
 class QuizService extends ChangeNotifier {
@@ -360,5 +358,28 @@ class QuizService extends ChangeNotifier {
       quiz.description.toLowerCase().contains(query.toLowerCase()) ||
       quiz.topic.toLowerCase().contains(query.toLowerCase())
     ).toList();
+  }
+
+  // Get all available topics (for compatibility with older screens)
+  List<String> getAvailableTopics() {
+    final topics = _allQuestions.map((q) => q.topic).toSet().toList();
+    topics.sort();
+    return topics;
+  }
+
+  // Get recommended quizzes based on user progress (for compatibility)
+  List<Quiz> getRecommendedQuizzes(Map<String, int> userTopicProgress) {
+    // Simple recommendation: return quizzes from topics with lowest progress
+    final sortedTopics = userTopicProgress.entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value));
+    
+    if (sortedTopics.isNotEmpty) {
+      final lowestTopic = sortedTopics.first.key;
+      return _quizzes.where((quiz) => 
+        quiz.topic.toLowerCase().contains(lowestTopic.toLowerCase())
+      ).take(3).toList();
+    }
+    
+    return _quizzes.take(3).toList();
   }
 }

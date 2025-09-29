@@ -70,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await userService.createOrLoginUser(
         name: nameController.text.trim(),
         email: '${nameController.text.toLowerCase().replaceAll(' ', '.')}@student.com',
+        grade: 5, // Default grade
       );
       Navigator.of(context).pop();
     }
@@ -575,7 +576,7 @@ class _HomeScreenState extends State<HomeScreen> {
               gradient: LinearGradient(
                 colors: [
                   (topicColor as MaterialColor).shade400,
-                  (topicColor as MaterialColor).shade600
+                  (topicColor).shade600
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,

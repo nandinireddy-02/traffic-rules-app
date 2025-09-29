@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/grade_aware_home_screen.dart';
-import 'screens/quiz_screen.dart';
 import 'services/user_service.dart';
 import 'services/grade_aware_quiz_service.dart';
 import 'models/user.dart';
@@ -35,7 +34,6 @@ class TrafficRulesKidsApp extends StatelessWidget {
             secondary: const Color(0xFF8B5CF6),
             tertiary: const Color(0xFF06B6D4),
             surface: Colors.white,
-            background: const Color(0xFFF8FAFC),
             error: const Color(0xFFEF4444),
             onPrimary: Colors.white,
             onSecondary: Colors.white,

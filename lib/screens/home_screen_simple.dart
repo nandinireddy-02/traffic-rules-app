@@ -70,7 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 final userService = Provider.of<UserService>(context, listen: false);
                 await userService.createUser(
                   nameController.text,
-                  emailController.text.isEmpty ? null : emailController.text,
+                  emailController.text.isEmpty ? '${nameController.text.toLowerCase().replaceAll(' ', '.')}@student.com' : emailController.text,
+                  5, // Default grade
                 );
                 Navigator.of(context).pop();
               }
@@ -176,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
       childAspectRatio: 2,
       children: [
         _buildStatCard('Quizzes', '${stats['totalQuizzes']}', Icons.quiz, Colors.blue),
-        _buildStatCard('Accuracy', '${stats['accuracy'].toStringAsFixed(1)}%', Icons.target, Colors.green),
+        _buildStatCard('Accuracy', '${stats['accuracy'].toStringAsFixed(1)}%', Icons.track_changes, Colors.green),
         _buildStatCard('Grade', stats['grade'], Icons.grade, Colors.orange),
         _buildStatCard('Badges', '${stats['badges']}', Icons.emoji_events, Colors.purple),
       ],

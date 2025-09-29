@@ -251,4 +251,9 @@ class UserService extends ChangeNotifier {
       'badges': _currentUser!.achievedBadges.length,
     };
   }
+
+  // Create user method for compatibility with older screens
+  Future<void> createUser(String name, String email, int grade) async {
+    await createOrLoginUser(name: name, email: email, grade: grade);
+  }
 }
