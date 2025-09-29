@@ -16,15 +16,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeServices();
+    _checkUserStatus();
   }
 
-  Future<void> _initializeServices() async {
+  Future<void> _checkUserStatus() async {
     final userService = Provider.of<UserService>(context, listen: false);
-    final quizService = Provider.of<QuizService>(context, listen: false);
-    
-    await userService.initialize();
-    await quizService.initialize();
     
     // Create default user if none exists
     if (!userService.isLoggedIn) {
