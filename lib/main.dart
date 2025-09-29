@@ -101,7 +101,7 @@ class TrafficRulesKidsApp extends StatelessWidget {
             ),
           ),
         ),
-        home: const MainApp(),
+  home: const MainApp(),
       ),
     );
   }
