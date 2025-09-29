@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/grade_aware_home_screen.dart';
 import 'services/user_service.dart';
+import 'services/quiz_service.dart';
 import 'services/grade_aware_quiz_service.dart';
 import 'models/user.dart';
 
@@ -19,6 +20,7 @@ class TrafficRulesKidsApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => UserService()),
         ChangeNotifierProvider(create: (context) => GradeAwareQuizService()),
+        ChangeNotifierProvider<QuizService>(create: (context) => QuizService()),
       ],
       child: MaterialApp(
         title: 'TrafficAce Kids - Grade-wise Learning',
@@ -124,9 +126,11 @@ class _MainAppState extends State<MainApp> {
 
   Future<void> _initializeServices() async {
     final userService = Provider.of<UserService>(context, listen: false);
-    final quizService = Provider.of<GradeAwareQuizService>(context, listen: false);
+    final gradeAwareQuizService = Provider.of<GradeAwareQuizService>(context, listen: false);
+    final quizService = Provider.of<QuizService>(context, listen: false);
     
     await userService.initialize();
+    await gradeAwareQuizService.initialize();
     await quizService.initialize();
     
     setState(() {
