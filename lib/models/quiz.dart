@@ -7,6 +7,8 @@ class Question {
   final String topic;
   final String difficulty; // 'easy', 'medium', 'hard'
   final String? imageUrl;
+  final String? videoUrl; // YouTube or local video URL
+  final String? videoDescription; // Description of what the video teaches
   final List<int> gradeLevel; // Which grades this question is appropriate for
 
   Question({
@@ -18,6 +20,8 @@ class Question {
     required this.topic,
     this.difficulty = 'medium',
     this.imageUrl,
+    this.videoUrl,
+    this.videoDescription,
     this.gradeLevel = const [2, 3, 4, 5, 6, 7, 8, 9, 10], // Default: all grades
   });
 
@@ -37,6 +41,8 @@ class Question {
       'topic': topic,
       'difficulty': difficulty,
       'imageUrl': imageUrl,
+      'videoUrl': videoUrl,
+      'videoDescription': videoDescription,
       'gradeLevel': gradeLevel,
     };
   }
@@ -51,6 +57,8 @@ class Question {
       topic: json['topic'],
       difficulty: json['difficulty'] ?? 'medium',
       imageUrl: json['imageUrl'],
+      videoUrl: json['videoUrl'],
+      videoDescription: json['videoDescription'],
       gradeLevel: List<int>.from(json['gradeLevel'] ?? [2, 3, 4, 5, 6, 7, 8, 9, 10]),
     );
   }

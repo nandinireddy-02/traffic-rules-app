@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:math';
 import '../models/quiz.dart';
 
 class GradeAwareQuizService extends ChangeNotifier {
@@ -63,6 +61,68 @@ class GradeAwareQuizService extends ChangeNotifier {
         topic: 'Traffic Lights',
         difficulty: 'easy',
         gradeLevel: [2, 3],
+      ),
+
+      // GRADE 2 VIDEO ENHANCED QUESTIONS - Traffic Lights Learning
+      Question(
+        id: 'tl_g2_video_001',
+        text: '📺 Watch the Traffic Light Song! What do you do when you see RED? 🚦',
+        options: ['🏃‍♀️ Run across!', '✋ STOP and wait!', '🚗 Drive faster!', '👀 Close my eyes!'],
+        correctAnswerIndex: 1,
+        explanation: 'RED means STOP! Just like in the song - we stop and stay safe! 🛑✨',
+        topic: 'Video Learning',
+        difficulty: 'easy',
+        gradeLevel: [2],
+        videoUrl: 'https://www.youtube.com/watch?v=0Rqw4krMOug',
+        videoDescription: '🎵 Learn the Traffic Light Song! Red means STOP, Green means GO!',
+      ),
+      Question(
+        id: 'tl_g2_video_002', 
+        text: '📺 After watching the video, what does GREEN light tell cars to do? 🚦',
+        options: ['🛑 Stop right now!', '⏰ Wait a little!', '🚗 Go carefully!', '📱 Use phone!'],
+        correctAnswerIndex: 2,
+        explanation: 'GREEN means GO! But cars must still be careful and watch for people. 🚗💚',
+        topic: 'Video Learning',
+        difficulty: 'easy',
+        gradeLevel: [2],
+        videoUrl: 'https://www.youtube.com/watch?v=b6UIZjG-fEE',
+        videoDescription: '🚦 Learn how traffic lights keep everyone safe on the road!',
+      ),
+      Question(
+        id: 'tl_g2_video_003',
+        text: '📺 Watch how to cross the street safely! What should you do FIRST? 🚶‍♀️',
+        options: ['🏃‍♀️ Run fast across!', '👀 Look both ways!', '📱 Play games!', '🎵 Sing loud songs!'],
+        correctAnswerIndex: 1,
+        explanation: 'Always look LEFT, RIGHT, LEFT again before crossing! Safety first! 👀✨',
+        topic: 'Video Learning',
+        difficulty: 'easy', 
+        gradeLevel: [2],
+        videoUrl: 'https://www.youtube.com/watch?v=lX6RRoyAVCg',
+        videoDescription: '🚶‍♀️ Learn the safe way to cross streets with grown-ups!',
+      ),
+      Question(
+        id: 'tl_g2_video_004',
+        text: '📺 Watch about STOP signs! What shape is a STOP sign? 🛑',
+        options: ['🔵 Circle like a ball!', '🔺 Triangle like pizza!', '🛑 8 sides like octopus!', '⭐ Star like twinkle!'],
+        correctAnswerIndex: 2,
+        explanation: 'STOP signs have 8 sides like an octopus! They\'re red and say STOP! 🛑🐙',
+        topic: 'Video Learning',
+        difficulty: 'easy',
+        gradeLevel: [2],
+        videoUrl: 'https://www.youtube.com/watch?v=SYc8gjcrB-4',
+        videoDescription: '🛑 Learn about different traffic signs and what they mean!',
+      ),
+      Question(
+        id: 'tl_g2_video_005',
+        text: '📺 Watch about seatbelts! Why do we wear seatbelts in the car? 🚗',
+        options: ['🎀 To look pretty!', '🛡️ To stay safe!', '🎮 To play games!', '🍎 To eat snacks!'],
+        correctAnswerIndex: 1,
+        explanation: 'Seatbelts are like superhero belts that keep us safe in cars! 🦸‍♀️🚗',
+        topic: 'Video Learning',
+        difficulty: 'easy',
+        gradeLevel: [2],
+        videoUrl: 'https://www.youtube.com/watch?v=kUjKxtJd0Wk',
+        videoDescription: '🚗 Learn why seatbelts are important for staying safe in cars!',
       ),
 
       // GRADE 4-5: Traffic Lights + Basic Signs
@@ -207,6 +267,17 @@ class GradeAwareQuizService extends ChangeNotifier {
         difficulty: 'easy',
         questions: _getQuestionsByGradeAndTopic([2, 3], 'Traffic Lights'),
         timeLimit: 10,
+      ),
+
+      // Grade 2: Video Learning Experience - NEW!
+      Quiz(
+        id: 'grade2_video_learning',
+        title: '📺 Watch & Learn Traffic Safety!',
+        description: 'Watch fun videos and learn about staying safe! 🎬✨',
+        topic: 'Video Learning',
+        difficulty: 'easy',
+        questions: _getQuestionsByGradeAndTopic([2], 'Video Learning'),
+        timeLimit: 15,
       ),
 
       // Grade 4-5: Traffic Lights + Basic Signs

@@ -593,6 +593,35 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                               ),
                             ),
                           ),
+                          // Video indicator for Grade 2 video quiz
+                          if (quiz.id == 'grade2_video_learning') ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(Icons.play_circle, size: 14, color: Colors.red),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'VIDEO',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ],
