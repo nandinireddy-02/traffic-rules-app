@@ -76,7 +76,7 @@ class VideoLearningService extends ChangeNotifier {
         id: 'video_g2_traffic_lights',
         title: '🚦 Understanding Traffic Lights',
         description: 'Learn what Red, Yellow, and Green lights mean!',
-        videoUrl: 'PLACEHOLDER_GRADE_2_TRAFFIC_LIGHTS',
+        videoUrl: 'https://youtu.be/aT61nwd5U-s?si=lgovLFXDRXeCqMpu',
         gradeLevel: 2,
         topic: 'Traffic Lights',
       ),
@@ -314,6 +314,9 @@ class VideoLearningService extends ChangeNotifier {
     await updateVideoUrl('video_g2_traffic_lights', youtubeUrl);
     print('✅ Updated Grade 2 Traffic Lights video URL to: $youtubeUrl');
   }
+
+  // Current Grade 2 Traffic Lights video (already integrated)
+  String get grade2TrafficLightsUrl => 'https://youtu.be/aT61nwd5U-s?si=lgovLFXDRXeCqMpu';
 
   // Function to get all placeholder video IDs for easy reference
   List<String> getAllPlaceholderVideoIds() {
