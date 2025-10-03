@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'dart:html' as html;
-import 'dart:ui_web' as ui;
 import 'package:provider/provider.dart';
 import '../services/video_learning_service.dart';
 
@@ -20,39 +18,12 @@ class WebVideoPlayer extends StatefulWidget {
 }
 
 class _WebVideoPlayerState extends State<WebVideoPlayer> {
-  late html.VideoElement _videoElement;
-  String _viewId = '';
   bool _isVideoWatched = false;
 
   @override
   void initState() {
     super.initState();
     _isVideoWatched = widget.video.isWatched;
-    _initializeVideo();
-  }
-
-  void _initializeVideo() {
-    _viewId = 'video-${widget.video.id}';
-    
-    _videoElement = html.VideoElement()
-      ..controls = true
-      ..style.width = '100%'
-      ..style.height = '100%'
-      ..style.backgroundColor = '#000000';
-    
-    // Convert asset path to web URL
-    String videoSrc = widget.video.videoUrl.replaceAll('assets/', 'assets/assets/');
-    _videoElement.src = videoSrc;
-    
-    _videoElement.onEnded.listen((_) {
-      _markVideoAsWatched();
-    });
-    
-    // Register the video element
-    ui.platformViewRegistry.registerViewFactory(
-      _viewId,
-      (int id) => _videoElement,
-    );
   }
 
   void _markVideoAsWatched() async {
@@ -113,6 +84,11 @@ class _WebVideoPlayerState extends State<WebVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    // Only build web video player on web platform
+    if (!kIsWeb) {
+      return const SizedBox.shrink();
+    }
+    
     final gradeColor = _getGradeColor(widget.video.gradeLevel);
 
     return Container(
@@ -182,11 +158,42 @@ class _WebVideoPlayerState extends State<WebVideoPlayer> {
               ),
             ),
             
-            // Video Player Area
+            // Video Player Area - Web Placeholder
             Container(
               height: 200,
               width: double.infinity,
-              child: HtmlElementView(viewType: _viewId),
+              color: Colors.black,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.play_circle_filled,
+                      size: 64,
+                      color: gradeColor,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Web Video Player\n(Feature Coming Soon)',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: _markVideoAsWatched,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: gradeColor,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Mark as Watched'),
+                    ),
+                  ],
+                ),
+              ),
             ),
 
             // Description and Status

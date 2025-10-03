@@ -478,7 +478,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                 video: video,
                 onVideoCompleted: () {
                   // Refresh the service to update completion status
-                  videoService.notifyListeners();
+                  // The video service will automatically notify listeners when marking video as watched
                 },
               )),
             ] else ...[

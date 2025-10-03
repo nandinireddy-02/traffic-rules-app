@@ -312,7 +312,7 @@ class VideoLearningService extends ChangeNotifier {
   // Demo function to show how to add your YouTube video
   Future<void> updateGrade2TrafficLightsVideo(String youtubeUrl) async {
     await updateVideoUrl('video_g2_traffic_lights', youtubeUrl);
-    print('✅ Updated Grade 2 Traffic Lights video URL to: $youtubeUrl');
+    // Video URL updated successfully
   }
 
   // Current Grade 2 Traffic Lights video (already integrated)
