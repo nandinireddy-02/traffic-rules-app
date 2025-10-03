@@ -24,7 +24,7 @@ class UserService extends ChangeNotifier {
         _currentUser = User.fromJson(json.decode(userJson));
         notifyListeners();
       } catch (e) {
-        print('Error loading user: $e');
+        // Loading user data...
       }
     }
   }

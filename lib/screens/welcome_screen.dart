@@ -35,19 +35,19 @@ class WelcomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 48),
             const ElevatedButton(
-              onPressed: null, // Replace with actual navigation if needed
-              child: Text('Get Started'),
+              onPressed: null,
               style: ButtonStyle(
-                padding: MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 40, vertical: 16)),
-                textStyle: MaterialStatePropertyAll(TextStyle(fontSize: 20)),
-                backgroundColor: MaterialStatePropertyAll(Colors.green),
-                foregroundColor: MaterialStatePropertyAll(Colors.white),
-                shape: MaterialStatePropertyAll(
+                padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 40, vertical: 16)),
+                textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 20)),
+                backgroundColor: WidgetStatePropertyAll(Colors.green),
+                foregroundColor: WidgetStatePropertyAll(Colors.white),
+                shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),
                 ),
-              ),
+              ), // Replace with actual navigation if needed
+              child: Text('Get Started'),
             ),
           ],
         ),

@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -130,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(20),
           ),
           child: const Text(
@@ -149,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildLoginForm() {
     return Card(
       elevation: 10,
-      shadowColor: Colors.black.withOpacity(0.3),
+      shadowColor: Colors.black.withValues(alpha: 0.3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25),
       ),
@@ -288,7 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: (gradeData['color'] as Color).withOpacity(0.3),
+                              color: (gradeData['color'] as Color).withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -302,8 +302,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: isSelected 
-                              ? Colors.white.withOpacity(0.2) 
-                              : (gradeData['color'] as Color).withOpacity(0.1),
+                              ? Colors.white.withValues(alpha: 0.2) 
+                              : (gradeData['color'] as Color).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
@@ -331,7 +331,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(
                           fontSize: 10,
                           color: isSelected 
-                              ? Colors.white.withOpacity(0.9) 
+                              ? Colors.white.withValues(alpha: 0.9) 
                               : Colors.grey.shade600,
                         ),
                         textAlign: TextAlign.center,

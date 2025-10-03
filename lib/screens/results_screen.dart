@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/quiz.dart';
-import '../services/user_service.dart';
 import '../services/quiz_service.dart';
 
 class ResultsScreen extends StatelessWidget {
@@ -195,7 +194,7 @@ class ResultsScreen extends StatelessWidget {
           width: 2,
         ),
         borderRadius: BorderRadius.circular(8),
-        color: (isCorrect ? Colors.green : Colors.red).withOpacity(0.05),
+        color: (isCorrect ? Colors.green : Colors.red).withValues(alpha: 0.05),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

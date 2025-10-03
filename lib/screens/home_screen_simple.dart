@@ -64,12 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () async {
               if (nameController.text.isNotEmpty) {
                 final userService = Provider.of<UserService>(context, listen: false);
+                final navigator = Navigator.of(context);
                 await userService.createUser(
                   nameController.text,
                   emailController.text.isEmpty ? '${nameController.text.toLowerCase().replaceAll(' ', '.')}@student.com' : emailController.text,
                   5, // Default grade
                 );
-                Navigator.of(context).pop();
+                navigator.pop();
               }
             },
             child: const Text('Get Started'),
@@ -101,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           return RefreshIndicator(
             onRefresh: () async {
-              await _initializeServices();
+              await _checkUserStatus();
             },
             child: ListView(
               padding: const EdgeInsets.all(16),
@@ -346,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.amber.withOpacity(0.2),
+                          color: Colors.amber.withValues(alpha: 0.2),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(

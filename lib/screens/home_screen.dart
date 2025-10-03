@@ -67,12 +67,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleLogin() async {
     if (nameController.text.trim().isNotEmpty) {
       final userService = Provider.of<UserService>(context, listen: false);
+      final navigator = Navigator.of(context);
       await userService.createOrLoginUser(
         name: nameController.text.trim(),
         email: '${nameController.text.toLowerCase().replaceAll(' ', '.')}@student.com',
         grade: 5, // Default grade
       );
-      Navigator.of(context).pop();
+      navigator.pop();
     }
   }
 
@@ -132,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
     
     return Card(
       elevation: 8,
-      shadowColor: Colors.blue.withOpacity(0.3),
+      shadowColor: Colors.blue.withValues(alpha: 0.3),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(24),
@@ -156,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
@@ -174,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Welcome back!',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -195,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -214,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Study Streak',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.white.withOpacity(0.8),
+                            color: Colors.white.withValues(alpha: 0.8),
                           ),
                         ),
                         Text(
@@ -232,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     'Keep it up! 🔥',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -322,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildStatCard(String title, String value, IconData icon, Color color, Color backgroundColor) {
     return Card(
       elevation: 4,
-      shadowColor: color.withOpacity(0.3),
+      shadowColor: color.withValues(alpha: 0.3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -331,7 +332,7 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: LinearGradient(
-            colors: [backgroundColor, backgroundColor.withOpacity(0.7)],
+            colors: [backgroundColor, backgroundColor.withValues(alpha: 0.7)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -342,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.2),
+                color: color.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, color: color, size: 20),
@@ -551,7 +552,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 6,
-      shadowColor: topicColor.withOpacity(0.3),
+      shadowColor: topicColor.withValues(alpha: 0.3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -561,7 +562,7 @@ class _HomeScreenState extends State<HomeScreen> {
           gradient: LinearGradient(
             colors: [
               Colors.white,
-              topicColor.withOpacity(0.05),
+              topicColor.withValues(alpha: 0.05),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -584,7 +585,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: topicColor.withOpacity(0.3),
+                  color: topicColor.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -663,7 +664,7 @@ class _HomeScreenState extends State<HomeScreen> {
           trailing: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: topicColor.withOpacity(0.1),
+              color: topicColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -716,7 +717,7 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.only(right: 12),
       child: Card(
         elevation: 4,
-        shadowColor: topicColor.withOpacity(0.2),
+        shadowColor: topicColor.withValues(alpha: 0.2),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -727,7 +728,7 @@ class _HomeScreenState extends State<HomeScreen> {
             gradient: LinearGradient(
               colors: [
                 Colors.white,
-                topicColor.withOpacity(0.1),
+                topicColor.withValues(alpha: 0.1),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -743,7 +744,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: topicColor.withOpacity(0.2),
+                      color: topicColor.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(

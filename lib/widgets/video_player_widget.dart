@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'dart:html' as html;
+// import 'dart:html' as html; // Temporarily disabled for Android compatibility
 
 class VideoPlayerWidget extends StatefulWidget {
   final String? videoUrl;
@@ -31,9 +30,38 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void _openVideoInNewTab() {
-    if (widget.videoUrl != null && kIsWeb) {
-      html.window.open(widget.videoUrl!, '_blank');
-      _markVideoAsWatched(); // Mark as watched when clicked
+    if (widget.videoUrl != null) {
+      // For now, just mark as watched when tapped
+      _markVideoAsWatched();
+      
+      // Show a dialog with the video URL
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('🎥 Video Learning'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(widget.videoDescription ?? 'Educational Video'),
+                const SizedBox(height: 16),
+                const Text('Open this link in your browser:'),
+                const SizedBox(height: 8),
+                SelectableText(
+                  widget.videoUrl!,
+                  style: const TextStyle(color: Colors.blue),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Close'),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 
@@ -49,7 +77,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -110,9 +138,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                     // Background pattern
                     Positioned.fill(
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: const NetworkImage(
+                            image: NetworkImage(
                               'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMiIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjEpIi8+Cjwvc3ZnPgo='
                             ),
                             repeat: ImageRepeat.repeat,
@@ -128,11 +156,11 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
+                                color: Colors.black.withValues(alpha: 0.3),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -148,7 +176,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text(

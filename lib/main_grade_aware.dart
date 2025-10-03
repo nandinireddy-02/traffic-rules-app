@@ -69,7 +69,7 @@ class TrafficRulesKidsApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             color: Colors.white,
-            shadowColor: Colors.black.withOpacity(0.1),
+            shadowColor: Colors.black.withValues(alpha: 0.1),
           ),
           inputDecorationTheme: InputDecorationTheme(
             filled: true,

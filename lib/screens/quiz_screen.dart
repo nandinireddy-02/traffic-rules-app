@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import '../models/quiz.dart';
-import '../services/quiz_service.dart';
 import '../services/user_service.dart';
 import 'results_screen.dart';
 
@@ -159,7 +158,7 @@ class _QuizScreenState extends State<QuizScreen> {
             margin: const EdgeInsets.all(8),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -208,7 +207,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -227,7 +226,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   height: 8,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4),
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),
@@ -252,7 +251,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   // Enhanced Question text
                   Card(
                     elevation: 8,
-                    shadowColor: Colors.blue.withOpacity(0.2),
+                    shadowColor: Colors.blue.withValues(alpha: 0.2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -336,7 +335,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           padding: const EdgeInsets.only(bottom: 12),
                           child: Card(
                             elevation: isSelected ? 4 : 1,
-                            color: isSelected ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
+                            color: isSelected ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : null,
                             child: InkWell(
                               onTap: () => _selectAnswer(index),
                               borderRadius: BorderRadius.circular(12),

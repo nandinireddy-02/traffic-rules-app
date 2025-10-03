@@ -75,7 +75,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                 icon: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(Icons.person, color: Colors.white),
@@ -129,7 +129,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
         position: _slideAnimation,
         child: Card(
           elevation: 8,
-          shadowColor: Colors.black.withOpacity(0.3),
+          shadowColor: Colors.black.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(25),
           ),
@@ -141,7 +141,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
               gradient: LinearGradient(
                 colors: [
                   Colors.white,
-                  Colors.white.withOpacity(0.9),
+                  Colors.white.withValues(alpha: 0.9),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -155,7 +155,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: _getGradeBackgroundColor(user.grade).withOpacity(0.2),
+                        color: _getGradeBackgroundColor(user.grade).withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -194,7 +194,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: _getGradeBackgroundColor(user.grade).withOpacity(0.1),
+                    color: _getGradeBackgroundColor(user.grade).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Row(
@@ -372,10 +372,10 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -509,7 +509,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
               gradient: LinearGradient(
                 colors: [
                   Colors.white,
-                  cardColor.withOpacity(0.05),
+                  cardColor.withValues(alpha: 0.05),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -521,7 +521,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: cardColor.withOpacity(0.2),
+                    color: cardColor.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Icon(
@@ -562,7 +562,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: cardColor.withOpacity(0.2),
+                              color: cardColor.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -581,7 +581,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.blue.withOpacity(0.2),
+                              color: Colors.blue.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -602,12 +602,12 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.red.withOpacity(0.2),
+                                color: Colors.red.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Row(
+                              child: const Row(
                                 mainAxisSize: MainAxisSize.min,
-                                children: const [
+                                children: [
                                   Icon(Icons.play_circle, size: 14, color: Colors.red),
                                   SizedBox(width: 4),
                                   Text(
@@ -630,7 +630,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: cardColor.withOpacity(0.1),
+                    color: cardColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
@@ -689,7 +689,7 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: _getGradeBackgroundColor(user.grade).withOpacity(0.2),
+                color: _getGradeBackgroundColor(user.grade).withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(

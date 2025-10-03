@@ -180,7 +180,7 @@ class _StudyCenterScreenState extends State<StudyCenterScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: topic.color.withOpacity(0.1),
+                      color: topic.color.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -230,10 +230,10 @@ class _StudyCenterScreenState extends State<StudyCenterScreen> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: topic.color.withOpacity(0.1),
+                      color: topic.color.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: topic.color.withOpacity(0.3),
+                        color: topic.color.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
@@ -316,7 +316,7 @@ class TopicDetailScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   gradient: LinearGradient(
-                    colors: [topic.color.withOpacity(0.1), topic.color.withOpacity(0.05)],
+                    colors: [topic.color.withValues(alpha: 0.1), topic.color.withValues(alpha: 0.05)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -380,7 +380,7 @@ class TopicDetailScreen extends StatelessWidget {
                   },
                 ),
               );
-            }).toList(),
+            }),
             
             const SizedBox(height: 24),
             

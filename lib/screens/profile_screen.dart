@@ -97,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
-                color: _getGradeColor(stats['grade']).withOpacity(0.1),
+                color: _getGradeColor(stats['grade']).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: _getGradeColor(stats['grade']),
@@ -279,8 +279,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isAchieved 
-                ? Colors.amber.withOpacity(0.2) 
-                : Colors.grey.withOpacity(0.2),
+                ? Colors.amber.withValues(alpha: 0.2) 
+                : Colors.grey.withValues(alpha: 0.2),
             border: Border.all(
               color: isAchieved ? Colors.amber : Colors.grey,
               width: 2,
@@ -359,7 +359,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 20),

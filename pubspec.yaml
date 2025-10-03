@@ -27,10 +27,6 @@ dependencies:
   # Animations and UI Enhancements
   lottie: ^2.7.0
   
-  # Video Support
-  youtube_player_flutter: ^8.1.2
-  video_player: ^2.8.1
-  
   # Utilities
   intl: ^0.18.1
 
