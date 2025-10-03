@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/video_learning_service.dart';
+import 'local_video_player_widget.dart';
 
 class GradeVideoPlayerWidget extends StatefulWidget {
   final VideoLearningData video;
@@ -39,89 +40,48 @@ class _GradeVideoPlayerWidgetState extends State<GradeVideoPlayerWidget> {
     }
   }
 
-  void _openVideoInNewTab() {
-    if (widget.video.videoUrl.isNotEmpty && !widget.video.videoUrl.startsWith('PLACEHOLDER')) {
-      // Mark as watched when tapped
-      _markVideoAsWatched();
-      
-      // Show a dialog with the video URL
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Row(
-              children: [
-                Text('🎥 Grade ${widget.video.gradeLevel}'),
-                const Spacer(),
-                if (_isVideoWatched) 
-                  const Icon(Icons.check_circle, color: Colors.green),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  widget.video.title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(widget.video.description),
-                const SizedBox(height: 16),
-                const Text('Open this link in your browser:'),
-                const SizedBox(height: 8),
-                SelectableText(
-                  widget.video.videoUrl,
-                  style: const TextStyle(color: Colors.blue),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Close'),
+  void _showVideoDialog() async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.play_circle, color: _getGradeColor(widget.video.gradeLevel)),
+            const SizedBox(width: 8),
+            Text('🎥 Grade ${widget.video.gradeLevel}'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              widget.video.title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
-            ],
+            ),
+            const SizedBox(height: 8),
+            Text(widget.video.description),
+            const SizedBox(height: 16),
+            const Text('🚧 Video content coming soon! 📹\n\nFor now, you can mark this as watched to proceed with quizzes.'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _markVideoAsWatched();
+            },
+            child: const Text('Mark as Watched'),
           ),
-        );
-      }
-    } else {
-      // Show placeholder message
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('🚧 Coming Soon!'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(widget.video.title),
-                const SizedBox(height: 8),
-                Text(widget.video.description),
-                const SizedBox(height: 16),
-                const Text('This video will be available soon! 📹'),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Still mark as watched for testing purposes
-                  _markVideoAsWatched();
-                },
-                child: const Text('Mark as Watched (Demo)'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Close'),
-              ),
-            ],
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
           ),
-        );
-      }
-    }
+        ],
+      ),
+    );
   }
 
   Color _getGradeColor(int grade) {
@@ -146,6 +106,15 @@ class _GradeVideoPlayerWidgetState extends State<GradeVideoPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // If this is a local video file, use the local video player
+    if (widget.video.videoUrl.startsWith('assets/')) {
+      return LocalVideoPlayerWidget(
+        video: widget.video,
+        onVideoCompleted: widget.onVideoCompleted,
+      );
+    }
+    
+    // Otherwise, use the placeholder dialog approach
     final gradeColor = _getGradeColor(widget.video.gradeLevel);
 
     return Container(
@@ -217,7 +186,7 @@ class _GradeVideoPlayerWidgetState extends State<GradeVideoPlayerWidget> {
             
             // Video Player Area - Click to Watch
             GestureDetector(
-              onTap: _openVideoInNewTab,
+              onTap: _showVideoDialog,
               child: Container(
                 height: 120,
                 width: double.infinity,

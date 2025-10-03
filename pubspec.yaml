@@ -29,6 +29,9 @@ dependencies:
   
   # Utilities
   intl: ^0.18.1
+  
+  # Video Playback
+  video_player: ^2.8.1
 
 dev_dependencies:
   flutter_test:
@@ -39,3 +42,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/trafficmate_logo.png
+    - assets/videos/

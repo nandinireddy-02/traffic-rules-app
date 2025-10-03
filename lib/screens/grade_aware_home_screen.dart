@@ -410,10 +410,14 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
     );
   }
 
+
+
   Widget _buildVideoLearningSection(int grade, VideoLearningService videoService) {
     final gradeVideos = videoService.getVideosForGrade(grade);
     final completionPercentage = videoService.getGradeCompletionPercentage(grade);
     final areQuizzesUnlocked = videoService.areQuizzesUnlockedForGrade(grade);
+
+
 
     return Card(
       elevation: 4,
@@ -469,37 +473,27 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
               ),
               const SizedBox(height: 12),
               
-              // Grid of videos
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: 2.2,
-                  mainAxisSpacing: 8,
-                ),
-                itemCount: gradeVideos.length,
-                itemBuilder: (context, index) {
-                  return GradeVideoPlayerWidget(
-                    video: gradeVideos[index],
-                    onVideoCompleted: () {
-                      // This will trigger a rebuild and update the progress
-                    },
-                  );
+              // Display video widgets
+              ...gradeVideos.map((video) => GradeVideoPlayerWidget(
+                video: video,
+                onVideoCompleted: () {
+                  // Refresh the service to update completion status
+                  videoService.notifyListeners();
                 },
-              ),
+              )),
             ] else ...[
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: Colors.orange.shade50,
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.orange.shade200),
                 ),
                 child: const Text(
-                  '🚧 Video content for this grade is coming soon!',
+                  '🚧 No videos found for this grade!',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.black54,
+                    color: Colors.red,
                   ),
                   textAlign: TextAlign.center,
                 ),
