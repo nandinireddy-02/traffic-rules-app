@@ -5,12 +5,16 @@ class VideoPlayerWidget extends StatefulWidget {
   final String? videoUrl;
   final String? videoDescription;
   final VoidCallback? onVideoWatched;
+  final String? videoId;
+  final int? gradeLevel;
 
   const VideoPlayerWidget({
     super.key,
     this.videoUrl,
     this.videoDescription,
     this.onVideoWatched,
+    this.videoId,
+    this.gradeLevel,
   });
 
   @override

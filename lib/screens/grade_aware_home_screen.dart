@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/user_service.dart';
 import '../services/grade_aware_quiz_service.dart';
+import '../services/video_learning_service.dart';
 import '../models/quiz.dart';
 import '../models/user.dart';
+import '../widgets/grade_video_player_widget.dart';
 import 'quiz_screen.dart';
 
 class GradeAwareHomeScreen extends StatefulWidget {
@@ -53,8 +55,8 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<UserService, GradeAwareQuizService>(
-      builder: (context, userService, quizService, child) {
+    return Consumer3<UserService, GradeAwareQuizService, VideoLearningService>(
+      builder: (context, userService, quizService, videoService, child) {
         final user = userService.currentUser!;
         final gradeQuizzes = quizService.getQuizzesForGrade(user.grade);
 
@@ -93,7 +95,9 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
                 const SizedBox(height: 20),
                 _buildProgressSection(user),
                 const SizedBox(height: 20),
-                _buildQuizSection(gradeQuizzes, user.grade),
+                _buildVideoLearningSection(user.grade, videoService),
+                const SizedBox(height: 20),
+                _buildQuizSection(gradeQuizzes, user.grade, videoService),
               ],
             ),
           ),
@@ -406,7 +410,11 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
     );
   }
 
-  Widget _buildQuizSection(List<Quiz> quizzes, int grade) {
+  Widget _buildVideoLearningSection(int grade, VideoLearningService videoService) {
+    final gradeVideos = videoService.getVideosForGrade(grade);
+    final completionPercentage = videoService.getGradeCompletionPercentage(grade);
+    final areQuizzesUnlocked = videoService.areQuizzesUnlockedForGrade(grade);
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -420,53 +428,203 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
             Row(
               children: [
                 Icon(
-                  Icons.quiz_rounded,
+                  Icons.play_circle_filled,
                   color: _getGradeBackgroundColor(grade),
-                  size: 24,
+                  size: 28,
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  _getQuizSectionTitle(grade),
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    '🎥 Video Learning for Grade $grade',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
                 ),
               ],
             ),
+            
             const SizedBox(height: 16),
-            if (quizzes.isEmpty)
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
-                  borderRadius: BorderRadius.circular(15),
+            
+            // Progress summary
+            VideoLearningProgressWidget(
+              gradeLevel: grade,
+              completionPercentage: completionPercentage,
+              areQuizzesUnlocked: areQuizzesUnlocked,
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Video list
+            if (gradeVideos.isNotEmpty) ...[
+              const Text(
+                '📚 Watch these videos to learn:',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
                 ),
-                child: const Center(
-                  child: Text(
-                    'No quizzes available for your grade yet.\nCheck back soon! 📚',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              )
-            else
-              ListView.builder(
+              ),
+              const SizedBox(height: 12),
+              
+              // Grid of videos
+              GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: quizzes.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: 2.2,
+                  mainAxisSpacing: 8,
+                ),
+                itemCount: gradeVideos.length,
                 itemBuilder: (context, index) {
-                  final quiz = quizzes[index];
-                  return _buildQuizCard(quiz, grade);
+                  return GradeVideoPlayerWidget(
+                    video: gradeVideos[index],
+                    onVideoCompleted: () {
+                      // This will trigger a rebuild and update the progress
+                    },
+                  );
                 },
               ),
+            ] else ...[
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Text(
+                  '🚧 Video content for this grade is coming soon!',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildQuizSection(List<Quiz> quizzes, int grade, VideoLearningService videoService) {
+    final areQuizzesUnlocked = videoService.areQuizzesUnlockedForGrade(grade);
+        
+        return Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      areQuizzesUnlocked ? Icons.quiz_rounded : Icons.lock,
+                      color: areQuizzesUnlocked 
+                          ? _getGradeBackgroundColor(grade)
+                          : Colors.grey.shade400,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        areQuizzesUnlocked 
+                            ? _getQuizSectionTitle(grade)
+                            : '🔒 ${_getQuizSectionTitle(grade)} - Watch Videos to Unlock!',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: areQuizzesUnlocked ? Colors.black87 : Colors.grey.shade600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Show lock message if not unlocked
+                if (!areQuizzesUnlocked) ...[
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.orange.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.video_library, color: Colors.orange.shade700),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Watch at least one video above to unlock quizzes for Grade $grade!',
+                            style: TextStyle(
+                              color: Colors.orange.shade700,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  // Show unlocked quizzes
+                  Text(
+                    '🎉 Great! You\'ve unlocked the quizzes. Test your knowledge!',
+                    style: TextStyle(
+                      color: Colors.green.shade700,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+                
+                const SizedBox(height: 16),
+                
+                // Quiz content based on unlock status
+                if (!areQuizzesUnlocked)
+                  const SizedBox.shrink()
+                else if (quizzes.isEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'No quizzes available for your grade yet.\nCheck back soon! 📚',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: quizzes.length,
+                    itemBuilder: (context, index) {
+                      final quiz = quizzes[index];
+                      return _buildQuizCard(quiz, grade);
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
   }
 
   String _getQuizSectionTitle(int grade) {
