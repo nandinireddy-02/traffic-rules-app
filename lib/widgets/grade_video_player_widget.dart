@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/video_learning_service.dart';
+import '../services/realtime_stats_service.dart';
 import 'local_video_player_widget.dart';
 
 class GradeVideoPlayerWidget extends StatefulWidget {
@@ -34,6 +35,10 @@ class _GradeVideoPlayerWidgetState extends State<GradeVideoPlayerWidget> {
       
       // Mark in the service
       await context.read<VideoLearningService>().markVideoAsWatched(widget.video.id);
+      
+      // Track in real-time stats
+      final statsService = context.read<RealtimeStatsService>();
+      await statsService.recordVideoCompleted(widget.video.id, widget.video.title);
       
       // Callback for parent widgets
       widget.onVideoCompleted?.call();
@@ -87,18 +92,23 @@ class _GradeVideoPlayerWidgetState extends State<GradeVideoPlayerWidget> {
   Color _getGradeColor(int grade) {
     switch (grade) {
       case 2:
+        return Colors.red.shade400; // Bright red for traffic lights theme
       case 3:
-        return Colors.red.shade400;
+        return Colors.pink.shade400; // Pink for young learners
       case 4:
+        return Colors.orange.shade400; // Orange for warning signs theme
       case 5:
-        return Colors.orange.shade400;
+        return Colors.amber.shade500; // Amber for caution theme
       case 6:
+        return Colors.green.shade400; // Green for safety theme
       case 7:
-        return Colors.blue.shade400;
+        return Colors.teal.shade400; // Teal for advanced safety
       case 8:
+        return Colors.blue.shade400; // Blue for road awareness
       case 9:
+        return Colors.indigo.shade500; // Indigo for pre-driver theme
       case 10:
-        return Colors.indigo.shade500;
+        return Colors.purple.shade500; // Purple for advanced driver prep
       default:
         return Colors.blue.shade400;
     }

@@ -1,0 +1,6 @@
+# VIDEO CARD COLOR BACKUP
+# This file tracks video card color changes
+# Say "revert" to restore original video card colors
+# 
+# BACKUP CREATED: Video player card colors will be modified to match backgrounds
+# REVERT COMMAND: Use word "revert" to restore original card styling

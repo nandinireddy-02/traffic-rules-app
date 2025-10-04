@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../services/user_service.dart';
 import '../services/grade_aware_quiz_service.dart';
 import '../services/video_learning_service.dart';
+import '../services/realtime_stats_service.dart';
 import '../models/quiz.dart';
 import '../models/user.dart';
 import '../widgets/grade_video_player_widget.dart';
@@ -93,6 +94,8 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
               children: [
                 _buildWelcomeCard(user),
                 const SizedBox(height: 20),
+                _buildRealtimeStatsSection(),
+                const SizedBox(height: 20),
                 _buildProgressSection(user),
                 const SizedBox(height: 20),
                 _buildVideoLearningSection(user.grade, videoService),
@@ -109,18 +112,23 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
   Color _getGradeBackgroundColor(int grade) {
     switch (grade) {
       case 2:
+        return Colors.red.shade400; // Bright red for traffic lights theme
       case 3:
-        return Colors.red.shade400; // Traffic light theme
+        return Colors.pink.shade400; // Pink for young learners
       case 4:
+        return Colors.orange.shade400; // Orange for warning signs theme
       case 5:
-        return Colors.orange.shade400; // Warning signs theme
+        return Colors.amber.shade500; // Amber for caution theme
       case 6:
+        return Colors.green.shade400; // Green for safety theme
       case 7:
-        return Colors.blue.shade400; // Safety theme
+        return Colors.teal.shade400; // Teal for advanced safety
       case 8:
+        return Colors.blue.shade400; // Blue for road awareness
       case 9:
+        return Colors.indigo.shade500; // Indigo for pre-driver theme
       case 10:
-        return Colors.indigo.shade500; // Advanced theme
+        return Colors.purple.shade500; // Purple for advanced driver prep
       default:
         return Colors.blue.shade400;
     }
@@ -293,73 +301,82 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
   }
 
   Widget _buildProgressSection(User user) {
-    final stats = _calculateGradeStats(user);
-    
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return Consumer<RealtimeStatsService>(
+      builder: (context, statsService, child) {
+        final realtimeStats = statsService.getFormattedStats();
+        final userStats = _calculateGradeStats(user);
+        
+        // Combine user stats with real-time stats for accuracy
+        final combinedQuizzes = userStats['completed'] + realtimeStats['sessionQuizzesCompleted'];
+        final combinedVideos = realtimeStats['videosCompleted'];
+        
+        return Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.analytics_rounded,
-                  color: _getGradeBackgroundColor(user.grade),
-                  size: 24,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.analytics_rounded,
+                      color: _getGradeBackgroundColor(user.grade),
+                      size: 24,
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Your Progress',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                const Text(
-                  'Your Progress',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                const SizedBox(height: 16),
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 2.2,
+                  children: [
+                    _buildStatCard(
+                      'Quizzes Done',
+                      '$combinedQuizzes',
+                      Icons.quiz_rounded,
+                      Colors.green,
+                    ),
+                    _buildStatCard(
+                      'Videos Watched',
+                      '$combinedVideos',
+                      Icons.video_library,
+                      Colors.red,
+                    ),
+                    _buildStatCard(
+                      'Streak Days',
+                      '${realtimeStats['currentStreak']}',
+                      Icons.local_fire_department,
+                      Colors.orange,
+                    ),
+                    _buildStatCard(
+                      'Grade Level',
+                      'Grade ${user.grade}',
+                      Icons.school,
+                      _getGradeBackgroundColor(user.grade),
+                    ),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 2.2,
-              children: [
-                _buildStatCard(
-                  'Quizzes Done',
-                  '${stats['completed']}',
-                  Icons.quiz_rounded,
-                  Colors.green,
-                ),
-                _buildStatCard(
-                  'Your Score',
-                  '${stats['accuracy'].toStringAsFixed(0)}%',
-                  Icons.trending_up,
-                  Colors.blue,
-                ),
-                _buildStatCard(
-                  'Streak Days',
-                  '${stats['streak']}',
-                  Icons.local_fire_department,
-                  Colors.orange,
-                ),
-                _buildStatCard(
-                  'Grade Level',
-                  'Grade ${user.grade}',
-                  Icons.school,
-                  _getGradeBackgroundColor(user.grade),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -370,6 +387,125 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
       'streak': user.currentStreak,
       'grade': user.grade,
     };
+  }
+
+  Widget _buildRealtimeStatsSection() {
+    return Consumer<RealtimeStatsService>(
+      builder: (context, statsService, child) {
+        final stats = statsService.getFormattedStats();
+        
+        return Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.trending_up,
+                      color: Colors.purple,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Live Progress',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        'Real-time',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                
+                // Session Summary
+                if (stats['sessionVideosWatched'] > 0 || stats['sessionQuizzesCompleted'] > 0) ...[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.blue.shade50, Colors.purple.shade50],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.flash_on, color: Colors.amber, size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            statsService.getSessionSummary(),
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.purple.shade700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                
+                // Stats Grid
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 1.2,
+                  children: [
+                    _buildMiniStatCard(
+                      'Videos',
+                      '${stats['videosCompleted']}',
+                      Icons.video_library,
+                      Colors.red,
+                    ),
+                    _buildMiniStatCard(
+                      'Quizzes',
+                      '${stats['quizzesCompleted']}',
+                      Icons.quiz,
+                      Colors.blue,
+                    ),
+                    _buildMiniStatCard(
+                      'Streak',
+                      '${stats['currentStreak']}',
+                      Icons.local_fire_department,
+                      Colors.orange,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildStatCard(String title, String value, IconData icon, Color color) {
@@ -400,6 +536,44 @@ class _GradeAwareHomeScreenState extends State<GradeAwareHomeScreen> with Ticker
             title,
             style: TextStyle(
               fontSize: 10,
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMiniStatCard(String title, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: color.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 16),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 9,
               color: Colors.grey.shade600,
               fontWeight: FontWeight.w500,
             ),

@@ -1,0 +1,6 @@
+# REVERT COMMAND
+# To revert background color changes, use this backup file
+# Copy this file over the main file if needed
+
+BACKUP CREATED: This file contains the original grade_aware_home_screen.dart
+USE WORD "revert" to restore original colors

@@ -7,6 +7,7 @@ import 'services/user_service.dart';
 import 'services/quiz_service.dart';
 import 'services/grade_aware_quiz_service.dart';
 import 'services/video_learning_service.dart';
+import 'services/realtime_stats_service.dart';
 import 'models/user.dart';
 
 void main() {
@@ -24,6 +25,7 @@ class TrafficRulesKidsApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => GradeAwareQuizService()),
         ChangeNotifierProvider<QuizService>(create: (context) => QuizService()),
         ChangeNotifierProvider(create: (context) => VideoLearningService()),
+        ChangeNotifierProvider(create: (context) => RealtimeStatsService()),
       ],
       child: MaterialApp(
         title: 'TrafficAce Kids - Grade-wise Learning',
@@ -157,11 +159,13 @@ class _MainAppState extends State<MainApp> {
     final gradeAwareQuizService = Provider.of<GradeAwareQuizService>(context, listen: false);
     final quizService = Provider.of<QuizService>(context, listen: false);
     final videoLearningService = Provider.of<VideoLearningService>(context, listen: false);
+    final realtimeStatsService = Provider.of<RealtimeStatsService>(context, listen: false);
     
     await userService.initialize();
     await gradeAwareQuizService.initialize();
     await quizService.initialize();
     await videoLearningService.initialize();
+    await realtimeStatsService.initialize();
     
     setState(() {
       _isInitialized = true;

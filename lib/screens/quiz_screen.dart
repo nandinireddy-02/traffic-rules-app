@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 import '../models/quiz.dart';
 import '../services/user_service.dart';
+import '../services/realtime_stats_service.dart';
 import 'results_screen.dart';
 
 class QuizScreen extends StatefulWidget {
@@ -27,6 +28,13 @@ class _QuizScreenState extends State<QuizScreen> {
     super.initState();
     timeRemainingSeconds = widget.quiz.timeLimit * 60;
     quizStartTime = DateTime.now();
+    
+    // Track quiz attempt
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final statsService = Provider.of<RealtimeStatsService>(context, listen: false);
+      statsService.recordQuizAttempted(widget.quiz.id, widget.quiz.title);
+    });
+    
     _startTimer();
   }
 
@@ -114,6 +122,15 @@ class _QuizScreenState extends State<QuizScreen> {
     );
     
     isQuizCompleted = true;
+    
+    // Track in real-time stats
+    final statsService = Provider.of<RealtimeStatsService>(context, listen: false);
+    await statsService.recordQuizCompleted(
+      widget.quiz.id, 
+      widget.quiz.title, 
+      correctAnswers.toDouble(), 
+      questions.length.toDouble(),
+    );
     
     // Navigate to results
     if (mounted) {

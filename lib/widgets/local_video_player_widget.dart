@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/video_learning_service.dart';
+import '../services/realtime_stats_service.dart';
 
 class LocalVideoPlayerWidget extends StatefulWidget {
   final VideoLearningData video;
@@ -24,6 +26,7 @@ class _LocalVideoPlayerWidgetState extends State<LocalVideoPlayerWidget> {
   bool _isInitialized = false;
   bool _hasError = false;
   String _errorMessage = '';
+  Duration _lastPosition = Duration.zero;
 
   @override
   void initState() {
@@ -39,10 +42,21 @@ class _LocalVideoPlayerWidgetState extends State<LocalVideoPlayerWidget> {
       _controller = VideoPlayerController.asset(widget.video.videoUrl);
       await _controller!.initialize();
       
+      // Load saved position
+      await _loadVideoProgress();
+      
       _controller!.addListener(() {
+        // Save progress every 5 seconds
+        final currentPosition = _controller!.value.position;
+        if (currentPosition.inSeconds % 5 == 0 && currentPosition != _lastPosition) {
+          _saveVideoProgress();
+          _lastPosition = currentPosition;
+        }
+        
+        // Check if video completed
         if (_controller!.value.position >= _controller!.value.duration) {
-          // Video completed
           _markVideoAsWatched();
+          _clearVideoProgress(); // Clear saved position when completed
         }
       });
       
@@ -68,27 +82,31 @@ class _LocalVideoPlayerWidgetState extends State<LocalVideoPlayerWidget> {
       // Mark in the service
       await context.read<VideoLearningService>().markVideoAsWatched(widget.video.id);
       
+      // Track in real-time stats
+      final statsService = context.read<RealtimeStatsService>();
+      await statsService.recordVideoCompleted(widget.video.id, widget.video.title);
+      
       // Callback for parent widgets
       widget.onVideoCompleted?.call();
       
-      // Show completion message
+      // Show completion message with stats
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Row(
               children: [
-                Icon(Icons.check_circle, color: Colors.white),
-                SizedBox(width: 8),
+                const Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    '✅ Great job! Video completed and marked as watched!',
-                    style: TextStyle(color: Colors.white),
+                    '✅ Great job! Video completed! (${statsService.videosCompleted} total videos watched)',
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ],
             ),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 3),
+            duration: const Duration(seconds: 3),
           ),
         );
       }
@@ -109,21 +127,92 @@ class _LocalVideoPlayerWidgetState extends State<LocalVideoPlayerWidget> {
     }
   }
 
+  // Video progress tracking methods
+  Future<void> _loadVideoProgress() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final positionMs = prefs.getInt('video_position_${widget.video.id}') ?? 0;
+      if (positionMs > 0 && _controller != null) {
+        final savedPosition = Duration(milliseconds: positionMs);
+        // Only seek if we're not close to the end (avoid auto-completion)
+        if (savedPosition < _controller!.value.duration - const Duration(seconds: 10)) {
+          await _controller!.seekTo(savedPosition);
+          _lastPosition = savedPosition;
+          
+          // Show resume notification
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    const Icon(Icons.history, color: Colors.white),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text('Resumed from ${_formatDuration(savedPosition)} ⏯️'),
+                    ),
+                  ],
+                ),
+                backgroundColor: Colors.blue,
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error loading video progress: $e');
+    }
+  }
+
+  Future<void> _saveVideoProgress() async {
+    try {
+      if (_controller != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('video_position_${widget.video.id}', 
+                           _controller!.value.position.inMilliseconds);
+      }
+    } catch (e) {
+      debugPrint('Error saving video progress: $e');
+    }
+  }
+
+  Future<void> _clearVideoProgress() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('video_position_${widget.video.id}');
+    } catch (e) {
+      debugPrint('Error clearing video progress: $e');
+    }
+  }
+
+  // Helper method to format duration for display
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return '$minutes:$seconds';
+  }
+
   Color _getGradeColor(int grade) {
     switch (grade) {
       case 2:
+        return Colors.red.shade400; // Bright red for traffic lights theme
       case 3:
-        return Colors.red.shade400;
+        return Colors.pink.shade400; // Pink for young learners
       case 4:
+        return Colors.orange.shade400; // Orange for warning signs theme
       case 5:
-        return Colors.orange.shade400;
+        return Colors.amber.shade500; // Amber for caution theme
       case 6:
+        return Colors.green.shade400; // Green for safety theme
       case 7:
-        return Colors.blue.shade400;
+        return Colors.teal.shade400; // Teal for advanced safety
       case 8:
+        return Colors.blue.shade400; // Blue for road awareness
       case 9:
+        return Colors.indigo.shade500; // Indigo for pre-driver theme
       case 10:
-        return Colors.indigo.shade500;
+        return Colors.purple.shade500; // Purple for advanced driver prep
       default:
         return Colors.blue.shade400;
     }
@@ -348,7 +437,7 @@ class _LocalVideoPlayerWidgetState extends State<LocalVideoPlayerWidget> {
                         child: Text(
                           _isVideoWatched 
                               ? '✨ Video completed! Well done!' 
-                              : '🎬 Your downloaded traffic lights video is ready to play!',
+                              : 'Tap to play this traffic safety video!',
                           style: TextStyle(
                             color: _isVideoWatched ? Colors.green.shade700 : gradeColor,
                             fontWeight: FontWeight.w600,
