@@ -176,9 +176,9 @@ flutter run -d ios
 <td align="center">
 <img src="https://via.placeholder.com/100x100/6366F1/FFFFFF?text=🤝" width="100px;" alt="You"/>
 <br />
-<sub><b>🌟 YOUR NAME HERE</b></sub>
+<sub><b>🌟 Want to Contribute?</b></sub>
 <br />
-<sub>🔥 Future Contributor</sub>
+<sub>🔥 Your Name Could Be Here!</sub>
 </td>
 </tr>
 </table>
